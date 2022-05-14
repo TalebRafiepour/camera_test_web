@@ -1,5 +1,6 @@
 //ignore_for_file: public_member_api_docs
 
+import 'dart:convert';
 import 'dart:html';
 
 import 'package:camera/camera.dart';
@@ -100,6 +101,7 @@ class _CameraViewState extends State<CameraView> {
   bool recording = false;
   bool flashLight = false;
   bool orientationLocked = false;
+  final List<String> encodedImages = [];
 
   Future<void> initCam(CameraDescription description) async {
     setState(() {
@@ -226,6 +228,9 @@ class _CameraViewState extends State<CameraView> {
               : () async {
                   final file = await controller!.takePicture();
                   final bytes = await file.readAsBytes();
+                  final encodedImage = base64Encode(bytes);
+                  encodedImages.add(encodedImage);
+                  setState(() {});
 
                   // final link = AnchorElement(
                   //     href: Uri.dataFromBytes(bytes, mimeType: 'image/png')
@@ -305,6 +310,24 @@ class _CameraViewState extends State<CameraView> {
         //     max: maxExposure!,
         //   ),
         SizedBox(height: 10),
+        SizedBox(
+          height: 90,
+          child: encodedImages.isEmpty
+              ? Center(
+                  child: Text('no images'),
+                )
+              : ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (_, index) {
+                    return Image.memory(
+                      base64Decode(encodedImages[index]),
+                      height: 80,
+                      width: 80,
+                    );
+                  },
+                  itemCount: encodedImages.length,
+                ),
+        )
       ]),
     );
   }
