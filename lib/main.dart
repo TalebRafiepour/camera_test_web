@@ -86,15 +86,16 @@ class CameraView extends StatefulWidget {
 class _CameraViewState extends State<CameraView> {
   String? error;
   CameraController? controller;
-  double? zoomLevel;
+
+  //double? zoomLevel;
   late CameraDescription cameraDescription = widget.cameras[0];
 
-  double? minZoom;
-  double? maxZoom;
+  // double? minZoom;
+  // double? maxZoom;
 
-  double? minExposure;
-  double? maxExposure;
-  double? exposure;
+  // double? minExposure;
+  // double? maxExposure;
+  // double? exposure;
 
   bool recording = false;
   bool flashLight = false;
@@ -108,22 +109,22 @@ class _CameraViewState extends State<CameraView> {
     try {
       await controller!.initialize();
 
-      final minZoom = await controller!.getMinZoomLevel();
-      final maxZoom = await controller!.getMaxZoomLevel();
+      // final minZoom = await controller!.getMinZoomLevel();
+      // final maxZoom = await controller!.getMaxZoomLevel();
 
-      final minExposure = await controller!.getMinExposureOffset();
-      final maxExposure = await controller!.getMaxExposureOffset();
+      // final minExposure = await controller!.getMinExposureOffset();
+      // final maxExposure = await controller!.getMaxExposureOffset();
 
-      print(maxExposure);
-      print(minExposure);
+      // print(maxExposure);
+      // print(minExposure);
       setState(() {
-        this.minZoom = minZoom;
-        this.maxZoom = maxZoom;
-        this.zoomLevel = 0;
+        // this.minZoom = minZoom;
+        // this.maxZoom = maxZoom;
+        // this.zoomLevel = 0;
 
-        this.minExposure = minExposure;
-        this.maxExposure = maxExposure;
-        this.exposure = 1;
+        // this.minExposure = minExposure;
+        // this.maxExposure = maxExposure;
+        // this.exposure = 1;
       });
     } catch (e) {
       setState(() {
@@ -226,13 +227,13 @@ class _CameraViewState extends State<CameraView> {
                   final file = await controller!.takePicture();
                   final bytes = await file.readAsBytes();
 
-                  final link = AnchorElement(
-                      href: Uri.dataFromBytes(bytes, mimeType: 'image/png')
-                          .toString());
-
-                  link.download = 'picture.png';
-                  link.click();
-                  link.remove();
+                  // final link = AnchorElement(
+                  //     href: Uri.dataFromBytes(bytes, mimeType: 'image/png')
+                  //         .toString());
+                  //
+                  // link.download = 'picture.png';
+                  // link.click();
+                  // link.remove();
                 },
           child: Text('Take picture'),
         ),
@@ -275,34 +276,34 @@ class _CameraViewState extends State<CameraView> {
               },
               child: Text('Turn flashlight off')),
         SizedBox(height: 10),
-        if (zoomLevel != null && maxZoom != null)
-          Text('Zoom level: $zoomLevel/$maxZoom'),
-        if (zoomLevel != null && minZoom != null && maxZoom != null)
-          Slider(
-            value: zoomLevel!,
-            onChanged: (newValue) {
-              setState(() {
-                zoomLevel = newValue;
-              });
-              controller!.setZoomLevel(newValue);
-            },
-            min: minZoom!,
-            max: maxZoom!,
-          ),
-        if (exposure != null && maxExposure != null)
-          Text('Exposure offset: $exposure/$maxExposure'),
-        if (exposure != null && minExposure != null && maxExposure != null)
-          Slider(
-            value: exposure!,
-            onChanged: (newValue) {
-              setState(() {
-                exposure = newValue;
-              });
-              controller!.setExposureOffset(newValue);
-            },
-            min: minExposure!,
-            max: maxExposure!,
-          ),
+        // if (zoomLevel != null && maxZoom != null)
+        //   Text('Zoom level: $zoomLevel/$maxZoom'),
+        // if (zoomLevel != null && minZoom != null && maxZoom != null)
+        //   Slider(
+        //     value: zoomLevel!,
+        //     onChanged: (newValue) {
+        //       setState(() {
+        //         zoomLevel = newValue;
+        //       });
+        //       controller!.setZoomLevel(newValue);
+        //     },
+        //     min: minZoom!,
+        //     max: maxZoom!,
+        //   ),
+        // if (exposure != null && maxExposure != null)
+        //   Text('Exposure offset: $exposure/$maxExposure'),
+        // if (exposure != null && minExposure != null && maxExposure != null)
+        //   Slider(
+        //     value: exposure!,
+        //     onChanged: (newValue) {
+        //       setState(() {
+        //         exposure = newValue;
+        //       });
+        //       controller!.setExposureOffset(newValue);
+        //     },
+        //     min: minExposure!,
+        //     max: maxExposure!,
+        //   ),
         SizedBox(height: 10),
       ]),
     );
