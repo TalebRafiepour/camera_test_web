@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:camera_test_web/camera_helper.dart';
 import 'package:camera_test_web/camera_photo_gallery_screen.dart';
+import 'package:camera_test_web/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:uuid/uuid.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({Key? key}) : super(key: key);
@@ -34,9 +38,9 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   @override
-  void dispose() async {
+  void dispose() {
     capturedImage.close();
-    (await _cameraControllerFuture)?.dispose();
+    _cameraControllerFuture.then((value) => value?.dispose());
     super.dispose();
   }
 
@@ -101,8 +105,16 @@ class _CameraScreenState extends State<CameraScreen> {
                               final file = await cameraController.takePicture();
                               final bytes = await file.readAsBytes();
                               capturedImage.sink.add(bytes);
-                              // final encodedImage = base64Encode(bytes);
-                              // encodedImages.add(encodedImage);
+                              final encodedImage = base64Encode(bytes);
+                              Box<String> box;
+                              if (!Hive.isBoxOpen(Constants.cameraPhotoBoxName))
+                                box = await Hive.openBox(
+                                    Constants.cameraPhotoBoxName);
+                              else
+                                box = Hive.box(Constants.cameraPhotoBoxName);
+
+                              final id = Uuid().v4();
+                              await box.put(id, encodedImage);
                             },
                             icon: Icon(
                               Icons.camera,
